@@ -1,3 +1,5 @@
+import { getResponse } from "./api"
+
 // A stock in account portfolio
 type owned_stock = {
     ticker : string,
@@ -28,3 +30,6 @@ function start_up() {
 //INSERT MORE CODE HERE
 
 start_up()
+
+
+console.log(getResponse("2025-01-30", "1", "minute"));
