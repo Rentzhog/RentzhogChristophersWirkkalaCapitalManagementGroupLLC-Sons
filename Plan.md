@@ -1,6 +1,7 @@
 Börshandlare
     Start-Up
         Give program money to use
+        Problem: start-up works but not console input
     Clock
     Read stock data
         Figure out how Google Finance API works
