@@ -8,4 +8,3 @@ type aggregate = {
     volume : number, // Volume of trades
     vwa    : number  // Volume Weighted Average price ??
 }
-
