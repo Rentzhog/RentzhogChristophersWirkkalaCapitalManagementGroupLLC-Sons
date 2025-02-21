@@ -1,6 +1,7 @@
 const apiKey: string = "ycT2akQvJ7n6FDhD99q3oB6ypvqbYaBg";
 const baseQuery: string = "https://api.polygon.io/v2/aggs/ticker"; 
 
+// OBS! Den här funktionen ska returna JSON-filen i form av en string -D
 export async function getResponse(simulationDate: string, range: string, timespan: string) : Promise<number> {
     const ticker = "AAPL"; // Apple Inc.
 
