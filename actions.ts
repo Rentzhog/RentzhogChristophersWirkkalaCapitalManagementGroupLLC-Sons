@@ -24,8 +24,9 @@ export function buy(account: account, ticker: string, value: number): void{
 
         account.capital = account.capital - value;
 
-        if (account.portfolio.has(ticker) === true) {
-            account.portfolio.get(ticker).worth = account.portfolio.get(ticker).worth + value;
+        const fuck_ts = account.portfolio.get(ticker)
+        if (fuck_ts != undefined) {
+            fuck_ts.worth = fuck_ts.worth + value;
 
         } else {
             let new_purchase: owned_stock = {ticker: ticker, worth: value};
@@ -39,22 +40,24 @@ export function buy(account: account, ticker: string, value: number): void{
 
 export function sell(account: account, ticker: string, value: number): void {
 
-    if (account.portfolio.has(ticker) === false) {
+    const fuck_ts = account.portfolio.get(ticker)
+
+    if (fuck_ts === undefined) {
         console.log('Account does not own selected stock')
         return;
 
     }
 
-    if (account.portfolio.get(ticker).worth < value) {
+    if (fuck_ts.worth < value) {
         console.log('Account does not own enough of selected stock')
 
     }
 
-    account.portfolio.get(ticker).worth = account.portfolio.get(ticker).worth - value;
+   fuck_ts.worth = fuck_ts.worth - value;
     account.capital = account.capital + value;
 
-    if (account.portfolio.get(ticker).worth < 1) {
+    if (fuck_ts.worth < 1) {
         account.portfolio.delete(ticker);
-        
+
     }
 }
