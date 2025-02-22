@@ -1,20 +1,9 @@
 import { getResponse } from "./api"
-
-// A stock in account portfolio
-type owned_stock = {
-    ticker : string,
-    worth  : number
-}
-
-// An account with liquid cash and asset portfolio
-type account = {
-    capital: number,
-    portfolio: [owned_stock]
-}
+import { account, owned_stock, buy } from "./actions"
 
 let bot_account = {
     capital: 0,
-    stocks: []
+    stocks: new Map()
 }
 
 // Initializes program
