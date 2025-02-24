@@ -12,6 +12,7 @@ export type account = {
     portfolio: Map<string, owned_stock>
 }
 
+//Buys amount of stock
 export function buy(account: account, ticker: string, value: number): void{
 
     if (value < account.capital) {
@@ -38,6 +39,7 @@ export function buy(account: account, ticker: string, value: number): void{
 
 }
 
+//Sells amount of an owned stock
 export function sell(account: account, ticker: string, value: number): void {
 
     const fuck_ts = account.portfolio.get(ticker)
@@ -59,5 +61,40 @@ export function sell(account: account, ticker: string, value: number): void {
     if (fuck_ts.worth < 1) {
         account.portfolio.delete(ticker);
 
+    }
+}
+
+//Updates worth of all stocks in portfolio
+export function update_portfolio(account: account): void {
+    account.portfolio.forEach (function(value, key) {
+        const change: number = MARKET NU.key / MARKET DÅ.key;
+        value.worth = value.worth * change;
+    })
+}
+
+//Calculates total value of an account, excluding liquid capital
+export function calc_worth(account: account): number {
+    let total: number = 0;
+    account.portfolio.forEach ( function(value, key) {
+        total = total + value.worth;
+    })
+    return total;
+}
+
+//Prints the status of the account
+export function account_status(account: account): void {
+    const total_worth: number = calc_worth(account)
+    const change: number = (total_worth / 1000) - 1
+    console.log('The account has a worth of'
+                + total_worth
+                + 'across' 
+                + account.portfolio.size
+                + 'stocks, and' 
+                + account.capital 
+                + 'in additional funds.')
+    if (change >= 0) {
+        console.log('The account value has increased by %d%.', change)
+    } else {
+        console.log('The account value has decreased by %d%.', change)
     }
 }
