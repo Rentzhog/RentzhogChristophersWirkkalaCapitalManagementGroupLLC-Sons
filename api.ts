@@ -1,4 +1,3 @@
-import { json_to_aggregate } from "./parse";
 
 const apiKey: string = "ycT2akQvJ7n6FDhD99q3oB6ypvqbYaBg";
 const baseQuery: string = "https://api.polygon.io/v2/aggs/ticker"; 
