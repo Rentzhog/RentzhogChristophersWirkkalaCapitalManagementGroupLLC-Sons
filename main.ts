@@ -1,4 +1,4 @@
-import { getResponse } from "./api"
+import { get_response } from "./api"
 import { account, owned_stock, buy } from "./actions"
 
 let bot_account = {
@@ -21,4 +21,4 @@ function start_up() {
 start_up()
 
 
-console.log(getResponse("2025-01-30", "1", "minute"));
+console.log(get_response("2025-01-30", 1, "minute"));
