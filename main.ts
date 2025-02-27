@@ -14,6 +14,3 @@ function start_up() {
 //INSERT MORE CODE HERE
 
 start_up()
-
-
-console.log(get_response("2025-01-30", 1, "minute"));
