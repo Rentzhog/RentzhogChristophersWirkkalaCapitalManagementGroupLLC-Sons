@@ -39,7 +39,7 @@ export function json_to_timeline(json: string): timeline_input {
             vwa    : 0
         }
         
-        aggregate.ticker = object.results[i].ticker;
+        aggregate.ticker = object.ticker;
         aggregate.open = object.results[i].o
         aggregate.close = object.results[i].c
         aggregate.high = object.results[i].h
