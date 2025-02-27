@@ -1,3 +1,15 @@
+export type timeline = [{
+    time : number
+    market : market
+}]
+
+export type market = Map<string, snapshot>
+
+export type snapshot = {
+    time : number
+    aggregate : aggregate
+}
+
 export type aggregate = {
     ticker : String, // Stock identifier
     open   : number, // Price at open
