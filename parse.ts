@@ -1,6 +1,6 @@
 export type market = Map<string, timeline>
 
-export type timeline = [snapshot]
+export type timeline = Array<snapshot>
 
 export type snapshot = {
     time : number
@@ -8,7 +8,7 @@ export type snapshot = {
 }
 
 export type aggregate = {
-    ticker : String, // Stock identifier
+    ticker : string, // Stock identifier
     open   : number, // Price at open
     close  : number, // Price at close
     high   : number, // Highest price
@@ -23,11 +23,10 @@ export type timeline_input = {
     timeline : timeline
 }
 
-// Tar bara första datapunkten i stockens historia, for now
 export function json_to_timeline(json: string): timeline_input {
     const object = JSON.parse(json);
     const ticker: string = object.ticker;
-    let timeline: Array<snapshot>;
+    const timeline: timeline = [];
     for (let i = 0; i < object.resultsCount; i++) {
         const aggregate: aggregate = {
             ticker : "",
@@ -39,6 +38,7 @@ export function json_to_timeline(json: string): timeline_input {
             volume : 0,
             vwa    : 0
         }
+        
         aggregate.ticker = object.results[i].ticker;
         aggregate.open = object.results[i].o
         aggregate.close = object.results[i].c
@@ -47,6 +47,7 @@ export function json_to_timeline(json: string): timeline_input {
         aggregate.amount = object.results[i].n
         aggregate.volume = object.results[i].v
         aggregate.vwa = object.results[i].vw
+
         const time: number = object.results[i].t
         timeline.push({time, aggregate});
     }
@@ -54,7 +55,16 @@ export function json_to_timeline(json: string): timeline_input {
     return result;
 }
 
+export function timelines_to_market(timelines: Array<timeline>): market {
+    const result: market = new Map;
+    for (let i = 0; i < timelines.length; i++) {
+        const ticker: string = timelines[0][0].aggregate.ticker
+        result.set(ticker, timelines[0])
+    }
+    return result;
+}
+
 // Testing purposes. Har blivit ersatt av parse.test.ts -D
 // Deprecated
-const agg: aggregate = json_to_timeline('{"ticker": "AAPL","queryCount": 853,"resultsCount": 853,"adjusted": true,"results": [{"v": 1755,"vw": 239.7725,"o": 239.63,"c": 239.92,"h": 239.92,"l": 239.63,"t": 1738227600000,"n": 98}]}')
-console.log(agg.ticker)
+// const agg: aggregate = json_to_timeline('{"ticker": "AAPL","queryCount": 853,"resultsCount": 853,"adjusted": true,"results": [{"v": 1755,"vw": 239.7725,"o": 239.63,"c": 239.92,"h": 239.92,"l": 239.63,"t": 1738227600000,"n": 98}]}')
+// console.log(agg.ticker)
