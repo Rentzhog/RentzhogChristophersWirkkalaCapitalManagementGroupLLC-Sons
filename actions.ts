@@ -1,4 +1,4 @@
-//Stuff the bot can do
+import { market } from "./parse"
 
 // A stock in account portfolio
 export type owned_stock = {
@@ -12,89 +12,100 @@ export type account = {
     portfolio: Map<string, owned_stock>
 }
 
-//Buys amount of stock
-export function buy(account: account, ticker: string, value: number): void{
+export class Bot {
+    account: account;
+    market: market;
 
-    if (value < account.capital) {
-
-        console.log('Not enough capital to complete transaction.');
-        return;
+    constructor(market: market) {
+        this.market = market;
+        this.account = {
+            capital: 0,
+            portfolio: new Map()
+        }
     }
 
-    if (TICKER FINNS PÅ MARKNADEN) {
+    buy(ticker: string, value: number): void{
 
-        account.capital = account.capital - value;
+        if (value < this.account.capital) {
 
-        const fuck_ts = account.portfolio.get(ticker)
+            console.log('Not enough capital to complete transaction.');
+            return;
+        }
+
+        if (!this.market.has(ticker)) {
+            console.log("Ticker does not exist in market")
+            return;
+        }
+
+        this.account.capital = this.account.capital - value;
+
+        const fuck_ts = this.account.portfolio.get(ticker)
         if (fuck_ts != undefined) {
             fuck_ts.worth = fuck_ts.worth + value;
 
         } else {
             let new_purchase: owned_stock = {ticker: ticker, worth: value};
-            account.portfolio.set(ticker, new_purchase);
+            this.account.portfolio.set(ticker, new_purchase);
 
         }
     }
-    return;
 
-}
+    //Sells amount of an owned stock
+    sell(ticker: string, value: number): void {
 
-//Sells amount of an owned stock
-export function sell(account: account, ticker: string, value: number): void {
+        const fuck_ts = this.account.portfolio.get(ticker)
 
-    const fuck_ts = account.portfolio.get(ticker)
+        if (fuck_ts === undefined) {
+            console.log('Account does not own selected stock')
+            return;
 
-    if (fuck_ts === undefined) {
-        console.log('Account does not own selected stock')
-        return;
+        }
 
+        if (fuck_ts.worth < value) {
+            console.log('Account does not own enough of selected stock')
+
+        }
+
+        fuck_ts.worth = fuck_ts.worth - value;
+        this.account.capital = this.account.capital + value;
+
+        if (fuck_ts.worth < 1) {
+            this.account.portfolio.delete(ticker);
+        }
     }
 
-    if (fuck_ts.worth < value) {
-        console.log('Account does not own enough of selected stock')
-
+    //Updates worth of all stocks in portfolio
+    update_portfolio(): void {
+        this.account.portfolio.forEach (function(value, key) {
+            const change: number = MARKET NU.key / MARKET DÅ.key;
+            value.worth = value.worth * change;
+        })
     }
 
-   fuck_ts.worth = fuck_ts.worth - value;
-    account.capital = account.capital + value;
-
-    if (fuck_ts.worth < 1) {
-        account.portfolio.delete(ticker);
-
+    //Calculates total value of an account, excluding liquid capital
+    calc_worth(account: account): number {
+        let total: number = 0;
+        account.portfolio.forEach ( function(value, key) {
+            total = total + value.worth;
+        })
+        return total;
     }
-}
 
-//Updates worth of all stocks in portfolio
-export function update_portfolio(account: account): void {
-    account.portfolio.forEach (function(value, key) {
-        const change: number = MARKET NU.key / MARKET DÅ.key;
-        value.worth = value.worth * change;
-    })
-}
-
-//Calculates total value of an account, excluding liquid capital
-export function calc_worth(account: account): number {
-    let total: number = 0;
-    account.portfolio.forEach ( function(value, key) {
-        total = total + value.worth;
-    })
-    return total;
-}
-
-//Prints the status of the account
-export function account_status(account: account): void {
-    const total_worth: number = calc_worth(account)
-    const change: number = (total_worth / 1000) - 1
-    console.log('The account has a worth of'
-                + total_worth
-                + 'across' 
-                + account.portfolio.size
-                + 'stocks, and' 
-                + account.capital 
-                + 'in additional funds.')
-    if (change >= 0) {
-        console.log('The account value has increased by %d%.', change)
-    } else {
-        console.log('The account value has decreased by %d%.', change)
+    //Prints the status of the account
+    account_status(account: account): void {
+        const total_worth: number = this.calc_worth(account)
+        const change: number = (total_worth / 1000) - 1
+        console.log('The account has a worth of'
+                    + total_worth
+                    + 'across' 
+                    + account.portfolio.size
+                    + 'stocks, and' 
+                    + account.capital 
+                    + 'in additional funds.')
+        if (change >= 0) {
+            console.log('The account value has increased by %d%.', change)
+        } else {
+            console.log('The account value has decreased by %d%.', change)
+        }
     }
 }
