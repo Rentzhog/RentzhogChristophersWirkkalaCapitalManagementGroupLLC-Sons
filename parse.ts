@@ -18,12 +18,7 @@ export type aggregate = {
     vwa    : number  // Volume Weighted Average price ??
 }
 
-export type timeline_input = {
-    ticker : string
-    timeline : timeline
-}
-
-export function json_to_timeline(json: string): timeline_input {
+export function json_to_timeline(json: string): timeline {
     const object = JSON.parse(json);
     const ticker: string = object.ticker;
     const timeline: timeline = [];
@@ -51,8 +46,7 @@ export function json_to_timeline(json: string): timeline_input {
         const time: number = object.results[i].t
         timeline.push({time, aggregate});
     }
-    const result: timeline_input = {ticker, timeline};
-    return result;
+    return timeline;
 }
 
 export function timelines_to_market(timelines: Array<timeline>): market {
