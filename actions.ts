@@ -75,7 +75,7 @@ export class Bot {
     }
 
     //Updates worth of all stocks in portfolio
-    update_portfolio(time: number): void {
+    update_portfolio(this: Bot, time: number): void {
         this.account.portfolio.forEach (function(value, key) {
             const change: number = this.market.get(key)[time].aggregate.close / this.market.get(key)[time - 1].aggregate.close;
             value.worth = value.worth * change;
