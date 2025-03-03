@@ -19,7 +19,7 @@ function start_up(tracked_stocks: Array<string>) {
     if (date_input != null) {
         for (let i = 0; i < tracked_stocks.length; i++) {
             get_response(tracked_stocks[i], date_input, 1, 'minute').then(result => {
-                const json = result.toString();
+                const json = JSON.stringify(result)
                 const timeline: timeline = json_to_timeline(json);
                 timelines.push(timeline);
             });
