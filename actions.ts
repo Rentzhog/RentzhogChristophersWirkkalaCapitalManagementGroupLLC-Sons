@@ -27,7 +27,6 @@ export class Bot {
     }
 
     buy(value: number): void{
-        console.log(this.account.capital)
         if (this.account.capital < value) {
             console.log('Not enough capital to complete transaction.');
             return;
@@ -50,7 +49,7 @@ export class Bot {
         this.account.capital += value;
     }
 
-    //Updates worth of stocks in portfolio
+    //Updates worth of stock
     update_stock(time_idx: number): void {
         if(time_idx == 0){ return; }
         const change: number = (this.timeline[time_idx].aggregate.close / this.timeline[time_idx - 1].aggregate.close);
@@ -63,14 +62,10 @@ export class Bot {
 
         const change: number = ((this.account.stock.worth + this.account.capital) / this.start_capital) - 1;
         console.log("");
-        console.log('Current simulation time:', date)
-        console.log('The account has a worth of' , this.account.stock.worth);
+        console.log('Current simulation time:', date.toTimeString())
+        console.log('The account has a worth of' , Math.round(this.account.stock.worth * 100) / 100);
         console.log('across one stock');
-        console.log('and', this.account.capital, 'in additional funds.');
-        if (change >= 0) {
-            console.log('The account value has increased by %d%.', Math.round(change * 100 * 1000) / 1000);
-        } else {
-            console.log('The account value has decreased by %d%.', Math.round(change * 100 * 1000) / 1000);
-        }
+        console.log('and', Math.round(this.account.capital * 100) / 100, 'in additional funds.');
+        console.log('The account value has changed by', Math.round(change * 100 * 1000) / 1000, "%");
     }
 }
