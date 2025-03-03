@@ -1,4 +1,4 @@
-import { market } from "./parse"
+import { timeline } from "./parse";
 
 // A stock in account portfolio
 export type owned_stock = {
@@ -9,103 +9,68 @@ export type owned_stock = {
 // An account with liquid cash and asset portfolio
 export type account = {
     capital: number,
-    portfolio: Map<string, owned_stock>
+    stock: owned_stock
 }
 
 export class Bot {
     account: account;
-    market: market;
+    timeline: timeline;
+    start_capital: number;
 
-    constructor(market: market) {
-        this.market = market;
+    constructor(stock: string, timeline: timeline, start_capital: number) {
         this.account = {
-            capital: 0,
-            portfolio: new Map()
+            capital: start_capital,
+            stock: {ticker: stock, worth: 0}
         }
+        this.timeline = timeline;
+        this.start_capital = start_capital;
     }
 
-    buy(ticker: string, value: number): void{
-
-        if (value < this.account.capital) {
-
+    buy(value: number): void{
+        console.log(this.account.capital)
+        if (this.account.capital < value) {
             console.log('Not enough capital to complete transaction.');
-            return;
-        }
-
-        if (!this.market.has(ticker)) {
-            console.log("Ticker does not exist in market")
             return;
         }
 
         this.account.capital = this.account.capital - value;
 
-        const fuck_ts = this.account.portfolio.get(ticker)
-        if (fuck_ts != undefined) {
-            fuck_ts.worth = fuck_ts.worth + value;
-
-        } else {
-            let new_purchase: owned_stock = {ticker: ticker, worth: value};
-            this.account.portfolio.set(ticker, new_purchase);
-
-        }
+        this.account.stock.worth += value;
     }
 
     //Sells amount of an owned stock
-    sell(ticker: string, value: number): void {
+    sell(value: number): void {
 
-        const fuck_ts = this.account.portfolio.get(ticker)
-
-        if (fuck_ts === undefined) {
-            console.log('Account does not own selected stock')
-            return;
-
-        }
-
-        if (fuck_ts.worth < value) {
+        if (this.account.stock.worth < value) {
             console.log('Account does not own enough of selected stock')
-
+            return;
         }
 
-        fuck_ts.worth = fuck_ts.worth - value;
-        this.account.capital = this.account.capital + value;
-
-        if (fuck_ts.worth < 1) {
-            this.account.portfolio.delete(ticker);
-        }
+        this.account.stock.worth -= value;
+        this.account.capital += value;
     }
 
-    //Updates worth of all stocks in portfolio
-    update_portfolio(this: Bot, time: number): void {
-        this.account.portfolio.forEach (function(value, key) {
-            const change: number = this.market.get(key)[time].aggregate.close / this.market.get(key)[time - 1].aggregate.close;
-            value.worth = value.worth * change;
-        })
-    }
-
-    //Calculates total value of an account, excluding liquid capital
-    calc_worth(account: account): number {
-        let total: number = 0;
-        account.portfolio.forEach ( function(value, key) {
-            total = total + value.worth;
-        })
-        return total;
+    //Updates worth of stocks in portfolio
+    update_stock(time_idx: number): void {
+        if(time_idx == 0){ return; }
+        const change: number = (this.timeline[time_idx].aggregate.close / this.timeline[time_idx - 1].aggregate.close);
+        this.account.stock.worth *= change;
     }
 
     //Prints the status of the account
-    account_status(account: account): void {
-        const total_worth: number = this.calc_worth(account)
-        const change: number = (total_worth / 1000) - 1
-        console.log('The account has a worth of'
-                    + total_worth
-                    + 'across' 
-                    + account.portfolio.size
-                    + 'stocks, and' 
-                    + account.capital 
-                    + 'in additional funds.')
+    account_status(time_idx: number): void {
+        const date = new Date(this.timeline[time_idx].time);
+
+        const change: number = ((this.account.stock.worth + this.account.capital) / this.start_capital) - 1;
+        console.log("");
+        console.log('Current simulation time:', date)
+        console.log('The account has a worth of' , this.account.stock.worth);
+        console.log('across one stock');
+        console.log('and', this.account.capital, 'in additional funds.');
         if (change >= 0) {
-            console.log('The account value has increased by %d%.', change)
+            console.log('The account value has increased by %d%.', Math.round(change * 100 * 1000) / 1000);
         } else {
-            console.log('The account value has decreased by %d%.', change)
+            console.log('The account value has decreased by %d%.', Math.round(change * 100 * 1000) / 1000);
         }
     }
 }
