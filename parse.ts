@@ -1,4 +1,4 @@
-export type market = Map<string, timeline>
+//export type market = Map<string, timeline>
 
 export type timeline = Array<snapshot>
 
@@ -56,14 +56,14 @@ export function json_to_timeline(json: string): timeline {
     return timeline;
 }
 
-export function timelines_to_market(timelines: Array<timeline>): market {
-    const result: market = new Map;
-    for (let i = 0; i < timelines.length; i++) {
-        const ticker: string = timelines[0][0].aggregate.ticker
-        result.set(ticker, timelines[0])
-    }
-    return result;
-}
+// export function timelines_to_market(timelines: Array<timeline>): market {
+//     const result: market = new Map;
+//     for (let i = 0; i < timelines.length; i++) {
+//         const ticker: string = timelines[0][0].aggregate.ticker
+//         result.set(ticker, timelines[0])
+//     }
+//     return result;
+// }
 
 // Testing purposes. Har blivit ersatt av parse.test.ts -D
 // Deprecated

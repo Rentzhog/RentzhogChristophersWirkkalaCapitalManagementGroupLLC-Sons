@@ -1,4 +1,4 @@
-import { json_to_timeline, timeline, timelines_to_market } from "./parse";
+import { json_to_timeline, timeline } from "./parse";
 import { get_response } from "./api"
 import { Bot } from "./actions"
 
@@ -20,27 +20,37 @@ function start_up(tracked_stocks: Array<string>): void {
     //const date_input: string | null = prompt('Enter simulation date (YYYY-MM-DD)\n> ', '2025-02-20');
     const date_input: string = '2025-02-20';
     
-    const timelines: Array<timeline> = []
+    const stock: string = tracked_stocks[0];
 
     if (date_input != null) {
-        for (let i = 0; i < tracked_stocks.length; i++) {
-            get_response(tracked_stocks[i], date_input, 1, 'minute').then(result => {
-                const json = JSON.stringify(result)
-                const timeline: timeline = json_to_timeline(json);
-                timelines.push(timeline);
-            });
-        }
+        get_response(tracked_stocks[0], date_input, 1, 'minute').then(result => {
+            const json = JSON.stringify(result);
+            const timeline: timeline = json_to_timeline(json);
+
+            
+            // const capital_input: string | null = prompt('Enter starting capital for the bot:\n> ', '0');
+            const bot = new Bot(stock, timeline, 1000);
+
+            main_loop(bot);
+        });
     }
+}
 
-    const market = timelines_to_market(timelines);
-    const bot = new Bot(market);
+function main_loop(bot: Bot){
+    for(let i: number = 0; i < bot.timeline.length; i++){
+        // Simple algorithm, alternate between buying and selling
+        const amount: number = 100;
 
-    // Det här skulle kunna bakas in i Bot constructorn -D
-    //const capital_input: string | null = prompt('Enter starting capital for the bot:\n> ', '0');
-    const capital_input: string = '1000';
-    bot.account.capital = capital_input != null 
-    ? parseInt(capital_input) 
-    : 0;
+        if(i % 2 == 0){
+            bot.buy(amount);
+        }
+        else{
+            bot.sell(amount);
+        }
+
+        bot.update_stock(i);
+        bot.account_status(i);
+    }
 }
 
 //INSERT MORE CODE HERE
