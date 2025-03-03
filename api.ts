@@ -9,6 +9,7 @@ const baseQuery: string = "https://api.polygon.io/v2/aggs/ticker";
  * @param simulationDate which date to get data from
  * @param range what interval to get data at ("1", "2", "3", "4")
  * @param timespan what time unit the interval is ('minute', 'day', 'second')
+ * @precondition ticker, simulationDate, range, timespan being calid inputs to the Polygon Stock API
  * @returns a promise with the fetched data
  */
 export async function get_response(ticker: string, simulationDate: string, range: number, timespan: string) {

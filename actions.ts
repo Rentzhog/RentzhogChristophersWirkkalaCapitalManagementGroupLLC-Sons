@@ -26,6 +26,16 @@ export class Bot {
         this.start_capital = start_capital;
     }
 
+    /**
+     * Theoretically purchases an amount of stock with the bot's account.
+     * @example
+     * // 400 subtracted from capital and 400 worth of assets added
+     * bot.buy(400);
+     * @param value intended value to buy of the stock.
+     * @precondition bot capital is greater than value
+     * @complexity Theta(1)
+     * @returns void
+     */
     buy(value: number): void{
         if (this.account.capital < value) {
             console.log('Not enough capital to complete transaction.');
@@ -37,7 +47,16 @@ export class Bot {
         this.account.stock.worth += value;
     }
 
-    //Sells amount of an owned stock
+    /**
+     * Theoretically sells an amount of stock with the bot's account.
+     * @example
+     * // 400 added to capital and 400 worth of assets removed
+     * bot.sell(400);
+     * @param value intended value to buy of the stock.
+     * @precondition worth of assets greater than value
+     * @complexity Theta(1)
+     * @returns void
+     */
     sell(value: number): void {
 
         if (this.account.stock.worth < value) {
@@ -49,14 +68,29 @@ export class Bot {
         this.account.capital += value;
     }
 
-    //Updates worth of stock
+    /**
+     * Updates worth of account based on market development.
+     * @example
+     * // increases bot asset worth by the change from snapshot 44 to 45
+     * update_portfolio(45);
+     * @param this ???
+     * @param time number of the currently simulated snapshot.
+     * @precondition time is shorter than bot timeline.
+     * @complexity Theta(1)
+     * @returns void
+     */
     update_stock(time_idx: number): void {
         if(time_idx == 0){ return; }
         const change: number = (this.timeline[time_idx].aggregate.close / this.timeline[time_idx - 1].aggregate.close);
         this.account.stock.worth *= change;
     }
 
-    //Prints the status of the account
+    /**
+     * Logs the status of the account compared to initialisation.
+     * @example
+     * //returns
+     * @param time_idx current simulation time as index of timeline.
+     */
     account_status(time_idx: number): void {
         const date = new Date(this.timeline[time_idx].time);
 
