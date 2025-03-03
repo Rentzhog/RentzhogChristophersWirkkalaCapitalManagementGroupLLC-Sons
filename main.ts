@@ -13,28 +13,28 @@ function start_up(tracked_stocks: Array<string>) {
 
     //const date_input: string | null = prompt('Enter simulation date (YYYY-MM-DD)\n> ', '2025-02-20');
     const date_input: string = '2025-02-20';
-    
+    const promises: Promise<void>[] = [];
     const timelines: Array<timeline> = []
 
     if (date_input != null) {
-        for (let i = 0; i < tracked_stocks.length; i++) {
-            get_response(tracked_stocks[i], date_input, 1, 'minute').then(result => {
-                const json = result.toString();
-                const timeline: timeline = json_to_timeline(json);
-                timelines.push(timeline);
-            });
-        }
+        tracked_stocks.forEach(ticker => {
+            const promise = get_response(ticker, date_input, 1, 'minute')
+                .then(result => {
+                    const timeline: timeline = json_to_timeline(result.toString());
+                    timelines.push(timeline);
+                });
+            promises.push(promise);
+        });
+
+        Promise.all(promises).then(() => {
+            const market = timelines_to_market(timelines);
+            const bot = new Bot(market);
+
+            const capital_input: string = '1000';
+            bot.account.capital = parseInt(capital_input);
+        });
+
     }
-
-    const market = timelines_to_market(timelines);
-    const bot = new Bot(market);
-
-    // Det här skulle kunna bakas in i Bot constructorn -D
-    //const capital_input: string | null = prompt('Enter starting capital for the bot:\n> ', '0');
-    const capital_input: string = '1000';
-    bot.account.capital = capital_input != null 
-    ? parseInt(capital_input) 
-    : 0;
 }
 
 //INSERT MORE CODE HERE
