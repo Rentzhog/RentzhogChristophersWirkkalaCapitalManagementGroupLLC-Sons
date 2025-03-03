@@ -4,8 +4,14 @@ import { Bot } from "./actions"
 
 const tracked_stocks: Array<string> = ['AAPL', 'MSFT', 'NVDA', 'AMZN', 'GOOG'];
 
-// Initializes program
-function start_up(tracked_stocks: Array<string>) {
+/**
+ * Initialises the program with stock tickers to be tracked
+ * @example
+ * // result is dependent
+ * start_up(['AAPL, 'MSFT']);
+ * @param tracked_stocks stock tickers to be tracked in the NASDAQ stock exchange
+ */
+function start_up(tracked_stocks: Array<string>): void {
     console.log("  RENTZHOG     Capital")
     console.log("CHRISTOPHERS   Management")
     console.log("  WIRKKALA     Group LLC.")
