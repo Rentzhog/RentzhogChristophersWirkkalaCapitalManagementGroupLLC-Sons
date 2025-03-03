@@ -24,6 +24,16 @@ export class Bot {
         }
     }
 
+    /**
+     * Theoretically purchases an amount of stock with the bot's account.
+     * @example
+     * // 400 subtracted from capital and 400 worth of assets added
+     * bot.buy(400);
+     * @param value intended value to buy of the stock.
+     * @precondition bot capital is greater than value
+     * @complexity Theta(1)
+     * @returns void
+     */
     buy(ticker: string, value: number): void{
 
         if (value < this.account.capital) {
@@ -50,7 +60,16 @@ export class Bot {
         }
     }
 
-    //Sells amount of an owned stock
+    /**
+     * Theoretically sells an amount of stock with the bot's account.
+     * @example
+     * // 400 added to capital and 400 worth of assets removed
+     * bot.sell(400);
+     * @param value intended value to buy of the stock.
+     * @precondition worth of assets greater than value
+     * @complexity Theta(1)
+     * @returns void
+     */
     sell(ticker: string, value: number): void {
 
         const fuck_ts = this.account.portfolio.get(ticker)
@@ -74,7 +93,17 @@ export class Bot {
         }
     }
 
-    //Updates worth of all stocks in portfolio
+    /**
+     * Updates worth of account based on market development.
+     * @example
+     * // increases bot asset worth by the change from snapshot 44 to 45
+     * update_portfolio(45);
+     * @param this ???
+     * @param time number of the currently simulated snapshot.
+     * @precondition time is shorter than bot timeline.
+     * @complexity Theta(1)
+     * @returns void
+     */
     update_portfolio(this: Bot, time: number): void {
         this.account.portfolio.forEach (function(value, key) {
             const change: number = this.market.get(key)[time].aggregate.close / this.market.get(key)[time - 1].aggregate.close;
@@ -91,7 +120,12 @@ export class Bot {
         return total;
     }
 
-    //Prints the status of the account
+    /**
+     * Logs the status of the account compared to initialisation.
+     * @example
+     * //returns
+     * @param time_idx current simulation time as index of timeline.
+     */
     account_status(account: account): void {
         const total_worth: number = this.calc_worth(account)
         const change: number = (total_worth / 1000) - 1

@@ -18,6 +18,13 @@ export type aggregate = {
     vwa    : number  // Volume Weighted Average price ??
 }
 
+/**
+ * Parses API return from JSON to timeline object
+ * @param json JSON file of a stocks history as a string.
+ * @precondition json is a string of the json format
+ * @complexity Theta(n), where n is length of the API results
+ * @returns json converted to a stock timeline object
+ */
 export function json_to_timeline(json: string): timeline {
     const object = JSON.parse(json);
     const ticker: string = object.ticker;
