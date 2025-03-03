@@ -11,7 +11,8 @@ function start_up(tracked_stocks: Array<string>) {
     console.log("  WIRKKALA     Group LLC.")
     console.log("                        & Sons")
 
-    const date_input: string | null = prompt('Enter simulation date (YYYY-MM-DD)\n> ', '2025-02-20');
+    //const date_input: string | null = prompt('Enter simulation date (YYYY-MM-DD)\n> ', '2025-02-20');
+    const date_input: string = '2025-02-20';
     
     const timelines: Array<timeline> = []
 
@@ -29,7 +30,8 @@ function start_up(tracked_stocks: Array<string>) {
     const bot = new Bot(market);
 
     // Det här skulle kunna bakas in i Bot constructorn -D
-    const capital_input: string | null = prompt('Enter starting capital for the bot:\n> ', '0');
+    //const capital_input: string | null = prompt('Enter starting capital for the bot:\n> ', '0');
+    const capital_input: string = '1000';
     bot.account.capital = capital_input != null 
     ? parseInt(capital_input) 
     : 0;
