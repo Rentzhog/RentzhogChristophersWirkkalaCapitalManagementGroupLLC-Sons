@@ -76,10 +76,11 @@ export class Bot {
 
     //Updates worth of all stocks in portfolio
     update_portfolio(this: Bot, time: number): void {
-        this.account.portfolio.forEach (function(value, key) {
-            const change: number = this.market.get(key)[time].aggregate.close / this.market.get(key)[time - 1].aggregate.close;
+        this.account.portfolio.forEach((value, key) => {
+            const timeline = this.market.get(key)!;
+            const change: number = timeline[time].aggregate.close / timeline[time - 1].aggregate.close;
             value.worth = value.worth * change;
-        })
+        });
     }
 
     //Calculates total value of an account, excluding liquid capital

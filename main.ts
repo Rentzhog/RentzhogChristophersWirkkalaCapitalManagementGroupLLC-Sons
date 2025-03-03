@@ -20,20 +20,21 @@ function start_up(tracked_stocks: Array<string>) {
         tracked_stocks.forEach(ticker => {
             const promise = get_response(ticker, date_input, 1, 'minute')
                 .then(result => {
-                    const timeline: timeline = json_to_timeline(result.toString());
+                    const timeline: timeline = json_to_timeline(JSON.stringify(result));
                     timelines.push(timeline);
                 });
             promises.push(promise);
         });
-
+        
         Promise.all(promises).then(() => {
             const market = timelines_to_market(timelines);
             const bot = new Bot(market);
-
+        
             const capital_input: string = '1000';
             bot.account.capital = parseInt(capital_input);
+        
+            console.log(market);
         });
-
     }
 }
 
