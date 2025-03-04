@@ -3,7 +3,7 @@ import { get_response } from "./api"
 import { Bot } from "./actions"
 import { Random } from "random";
 
-const tracked_stocks: Array<string> = ['AAPL', 'MSFT', 'NVDA', 'AMZN', 'GOOG'];
+const prompt = require("prompt-sync")();
 
 /**
  * Initialises the program with stock tickers to be tracked
@@ -12,28 +12,25 @@ const tracked_stocks: Array<string> = ['AAPL', 'MSFT', 'NVDA', 'AMZN', 'GOOG'];
  * start_up(['AAPL, 'MSFT']);
  * @param tracked_stocks stock tickers to be tracked in the NASDAQ stock exchange
  */
-function start_up(tracked_stocks: Array<string>): void {
+function start_up(): void {
     console.log("  RENTZHOG     Capital")
     console.log("CHRISTOPHERS   Management")
     console.log("  WIRKKALA     Group LLC.")
     console.log("                        & Sons")
 
-    //const date_input: string | null = prompt('Enter simulation date (YYYY-MM-DD)\n> ', '2025-02-20');
-    const date_input: string = '2025-02-20';
-    
-    const stock: string = tracked_stocks[0];
+    const date_input: string = prompt('Enter simulation date (YYYY-MM-DD)\n> ');
+    const stock_input: string = prompt('Enter stock ticker (ex. AAPL, GOOG)\n> ');
+    const capital_input: string = prompt('Enter starting capital\n> ');
+    const api_key: string = "ycT2akQvJ7n6FDhD99q3oB6ypvqbYaBg";
 
-    if (date_input != null) {
-        get_response(tracked_stocks[0], date_input, 1, 'minute').then(result => {
-            const json = JSON.stringify(result);
-            const timeline: timeline = json_to_timeline(json);
-            
-            // const capital_input: string | null = prompt('Enter starting capital for the bot:\n> ', '0');
-            const bot = new Bot(stock, timeline, 1000);
+    get_response(api_key, stock_input, date_input, 1, 'minute').then(result => {
+        const json = JSON.stringify(result);
+        const timeline: timeline = json_to_timeline(json);
 
-            main_loop(bot);
-        });
-    }
+        const bot = new Bot(stock_input, timeline, parseInt(capital_input));
+
+        main_loop(bot);
+    });
 }
 
 function main_loop(bot: Bot){
@@ -79,4 +76,4 @@ function algorithm(bot: Bot, time_idx: number){
 
 //INSERT MORE CODE HERE
 
-start_up(tracked_stocks)
+start_up();
