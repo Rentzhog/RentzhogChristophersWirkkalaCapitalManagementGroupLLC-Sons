@@ -1,7 +1,3 @@
-
-const apiKey: string = "ycT2akQvJ7n6FDhD99q3oB6ypvqbYaBg";
-const baseQuery: string = "https://api.polygon.io/v2/aggs/ticker"; 
-
 /**
  * Fetches data from polygon stock market api for a given date at given intervals
  * Use like this: get_response("YYYY-MM-DD", 1, "minute").then(result => { //Do something with result });
@@ -12,7 +8,8 @@ const baseQuery: string = "https://api.polygon.io/v2/aggs/ticker";
  * @precondition ticker, simulationDate, range, timespan being calid inputs to the Polygon Stock API
  * @returns a promise with the fetched data
  */
-export async function get_response(ticker: string, simulationDate: string, range: number, timespan: string) {
+export async function get_response(apiKey: string, ticker: string, simulationDate: string, range: number, timespan: string) {
+    const baseQuery: string = "https://api.polygon.io/v2/aggs/ticker";
     const query: string = baseQuery + "/" + ticker + "/range/" + range + "/" + timespan + "/" + simulationDate + "/" + simulationDate + "?apiKey=" + apiKey;
     const resultPromise = await fetch(query).catch((error) => {
         throw new Error(error);
