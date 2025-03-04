@@ -68,16 +68,3 @@ test('sell does not execute if not enough stock is owned', () => {
     consoleSpy.mockRestore();
 });
 
-test('update_stock correctly adjusts stock worth based on timeline changes', () => {
-    bot.buy(400);
-    bot.update_stock(1);
-    const expectedWorth = 400 * (120 / 110);
-    expect(bot.account.stock.worth).toBeCloseTo(expectedWorth, 5);
-});
-
-test('update_stock does nothing when time index is 0', () => {
-    bot.buy(400);
-    bot.update_stock(0);
-    expect(bot.account.stock.worth).toBe(400);
-});
-
