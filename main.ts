@@ -18,9 +18,9 @@ function start_up(): void {
     console.log("  WIRKKALA     Group LLC.")
     console.log("                        & Sons")
 
-    const date_input: string = prompt('Enter simulation date (YYYY-MM-DD)\n> ');
-    const stock_input: string = prompt('Enter stock ticker (ex. AAPL, GOOG)\n> ');
-    const capital_input: string = prompt('Enter starting capital\n> ');
+    const date_input: string = prompt('Enter simulation date (YYYY-MM-DD): ');
+    const stock_input: string = prompt('Enter stock ticker (ex. AAPL, GOOG): ');
+    const capital_input: string = prompt('Enter starting capital: ');
     const api_key: string = "ycT2akQvJ7n6FDhD99q3oB6ypvqbYaBg";
 
     get_response(api_key, stock_input, date_input, 1, 'minute').then(result => {
