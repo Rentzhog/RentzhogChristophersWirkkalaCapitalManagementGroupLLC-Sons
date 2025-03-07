@@ -1,12 +1,13 @@
-//export type market = Map<string, timeline>
-
+// Represents a timeline of aggregates in a timespan
 export type timeline = Array<snapshot>
 
+// An aggregate at a timestamp
 export type snapshot = {
     time : number
     aggregate : aggregate
 }
 
+// Information about a stock
 export type aggregate = {
     ticker : string, // Stock identifier
     open   : number, // Price at open
@@ -15,7 +16,7 @@ export type aggregate = {
     low    : number, // Lowest price
     amount : number, // Amount of trades
     volume : number, // Volume of trades
-    vwa    : number  // Volume Weighted Average price ??
+    vwa    : number  // Volume Weighted Average price
 }
 
 /**
@@ -55,17 +56,3 @@ export function json_to_timeline(json: string): timeline {
     }
     return timeline;
 }
-
-// export function timelines_to_market(timelines: Array<timeline>): market {
-//     const result: market = new Map;
-//     for (let i = 0; i < timelines.length; i++) {
-//         const ticker: string = timelines[0][0].aggregate.ticker
-//         result.set(ticker, timelines[0])
-//     }
-//     return result;
-// }
-
-// Testing purposes. Har blivit ersatt av parse.test.ts -D
-// Deprecated
-// const agg: aggregate = json_to_timeline('{"ticker": "AAPL","queryCount": 853,"resultsCount": 853,"adjusted": true,"results": [{"v": 1755,"vw": 239.7725,"o": 239.63,"c": 239.92,"h": 239.92,"l": 239.63,"t": 1738227600000,"n": 98}]}')
-// console.log(agg.ticker)

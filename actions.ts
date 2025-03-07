@@ -12,6 +12,7 @@ export type account = {
     stock: owned_stock
 }
 
+
 export class Bot {
     account: account;
     timeline: timeline;
@@ -73,7 +74,6 @@ export class Bot {
      * @example
      * // increases bot asset worth by the change from snapshot 44 to 45
      * update_portfolio(45);
-     * @param this ???
      * @param time number of the currently simulated snapshot.
      * @precondition time is shorter than bot timeline.
      * @complexity Theta(1)
@@ -87,8 +87,6 @@ export class Bot {
 
     /**
      * Logs the status of the account compared to initialisation.
-     * @example
-     * //returns
      * @param time_idx current simulation time as index of timeline.
      */
     account_status(time_idx: number): void {

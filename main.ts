@@ -1,16 +1,11 @@
 import { json_to_timeline, timeline } from "./parse";
 import { get_response } from "./api"
 import { Bot } from "./actions"
-import { Random } from "random";
 
 const prompt = require("prompt-sync")();
 
 /**
  * Initialises the program with stock tickers to be tracked
- * @example
- * // result is dependent
- * start_up(['AAPL, 'MSFT']);
- * @param tracked_stocks stock tickers to be tracked in the NASDAQ stock exchange
  */
 function start_up(): void {
     console.log("  RENTZHOG     Capital")
@@ -33,6 +28,11 @@ function start_up(): void {
     });
 }
 
+
+/**
+ * Main loop of the program, runs the algorithm for the bots timeline
+ * @param bot Bot to run
+ */
 function main_loop(bot: Bot){
     for(let time_idx: number = 0; time_idx < bot.timeline.length; time_idx++){
         algorithm(bot, time_idx);
@@ -42,17 +42,19 @@ function main_loop(bot: Bot){
     }
 }
 
+/**
+ * Buy/Sell algorithm, determines if we should buy or sell based on current stock information
+ * @param bot Bot to run algorithm on
+ * @param time_idx What index of the bot's timeline we are on
+ * @precondition time_idx should be in the bounds of the bots timeline
+ */
 function algorithm(bot: Bot, time_idx: number){
     const currentData = bot.timeline[time_idx].aggregate;
 
-    // Check if we're at the first data point; nothing to do
     if (time_idx === 0) {
         return;
     }
 
-    const previousData = bot.timeline[time_idx - 1].aggregate;
-
-    // Buy if the current price is below the VWAP and we have enough cash
     if (currentData.close < currentData.vwa && bot.account.capital >= currentData.close) {
         const amountToBuy = bot.account.capital * 0.5;
         if (amountToBuy / currentData.close > 0) {
@@ -61,19 +63,15 @@ function algorithm(bot: Bot, time_idx: number){
         }
     }
 
-    // Sell if the current price is above the VWAP
     else if (currentData.close > currentData.vwa) {
         const amountToSell = bot.account.capital * 0.5;
         bot.sell(amountToSell);
         console.log(`Selling`, Math.round(amountToSell * 100) / 100, `worth of ${currentData.ticker} at ${currentData.close}`);
     }
 
-    // Wait condition
     else {
         console.log(`Waiting at index ${time_idx}, no action taken.`);
     }
 }
-
-//INSERT MORE CODE HERE
 
 start_up();
