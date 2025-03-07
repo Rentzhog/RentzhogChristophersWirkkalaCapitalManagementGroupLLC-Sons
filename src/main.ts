@@ -30,8 +30,6 @@ export async function run(date_input: string, stock_input: string, capital_input
     return trade_res;
 }
 
-run("2025-02-20", "AAPL", "1000");
-
 /**
  * Main loop of the program, runs the algorithm for the bots timeline
  * @param bot Bot to run
