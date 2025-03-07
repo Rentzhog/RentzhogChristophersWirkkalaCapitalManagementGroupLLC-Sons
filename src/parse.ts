@@ -1,23 +1,4 @@
-// Represents a timeline of aggregates in a timespan
-export type timeline = Array<snapshot>
-
-// An aggregate at a timestamp
-export type snapshot = {
-    time : number
-    aggregate : aggregate
-}
-
-// Information about a stock
-export type aggregate = {
-    ticker : string, // Stock identifier
-    open   : number, // Price at open
-    close  : number, // Price at close
-    high   : number, // Highest price
-    low    : number, // Lowest price
-    amount : number, // Amount of trades
-    volume : number, // Volume of trades
-    vwa    : number  // Volume Weighted Average price
-}
+import { timeline, aggregate } from "./types";
 
 /**
  * Parses API return from JSON to timeline object

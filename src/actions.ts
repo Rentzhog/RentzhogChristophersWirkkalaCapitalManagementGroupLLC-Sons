@@ -1,4 +1,4 @@
-import { timeline } from "./parse";
+import { timeline } from "./types";
 
 // A stock in account portfolio
 export type owned_stock = {
@@ -99,5 +99,14 @@ export class Bot {
         console.log('across one stock');
         console.log('and', Math.round(this.account.capital * 100) / 100, 'in additional funds.');
         console.log('The account value has changed by', Math.round(change * 100 * 1000) / 1000, "%");
+    }
+
+    /**
+     * Calculates the total value of the account
+     * Including value of stock and capital
+     * @returns calculated value
+     */
+    get_total_value(): number{
+        return this.account.capital + this.account.stock.worth;
     }
 }

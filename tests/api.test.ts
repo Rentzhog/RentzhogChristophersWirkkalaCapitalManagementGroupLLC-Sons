@@ -11,7 +11,7 @@ it('fetch with correct url', async () => {
         })
     ) as jest.Mock;
 
-    await get_response('ycT2akQvJ7n6FDhD99q3oB6ypvqbYaBg', 'AAPL', '2025-02-04', 1, 'minute');
+    await get_response('AAPL', '2025-02-04', 1, 'minute');
 
     expect(global.fetch).toHaveBeenCalledWith(
         'https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/minute/2025-02-04/2025-02-04?apiKey=ycT2akQvJ7n6FDhD99q3oB6ypvqbYaBg'
@@ -22,7 +22,7 @@ it('fetch with correct url', async () => {
 
 it('return parsed json response', async () => {
     const resp = {};
-    const result = await get_response('ycT2akQvJ7n6FDhD99q3oB6ypvqbYaBg', 'AAPL', '2025-02-04', 1, 'minute');
+    const result = await get_response('AAPL', '2025-02-04', 1, 'minute');
 
     expect(result).toEqual(resp);
 });
@@ -33,5 +33,5 @@ it('should throw an error',async()=>{
 
     global.fetch = jest.fn(()=> Promise.reject("Network Error")) as jest.Mock;
 
-    await expect(get_response('ycT2akQvJ7n6FDhD99q3oB6ypvqbYaBg', 'AAPL', '2025-02-04', 1, 'minute')).rejects.toThrow("Network Error")
+    await expect(get_response('AAPL', '2025-02-04', 1, 'minute')).rejects.toThrow("Network Error")
 })

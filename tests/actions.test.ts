@@ -1,5 +1,5 @@
 import { Bot } from '../src/actions';
-import { timeline } from '../src/parse';
+import { timeline } from '../src/types';
 
 let sampleTimeline: timeline;
 let bot: Bot;
