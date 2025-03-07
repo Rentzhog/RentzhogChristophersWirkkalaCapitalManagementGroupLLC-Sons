@@ -68,3 +68,39 @@ test('sell does not execute if not enough stock is owned', () => {
     consoleSpy.mockRestore();
 });
 
+test('update_stock correctly updates stock worth', () => {
+    bot.buy(500);
+    expect(bot.account.stock.worth).toBe(500);
+    
+    bot.update_stock(1);
+    
+    const expectedWorth = 500 * (sampleTimeline[1].aggregate.close / sampleTimeline[0].aggregate.close);
+    expect(bot.account.stock.worth).toBeCloseTo(expectedWorth);
+});
+
+test('buy does not allow purchase if capital is insufficient', () => {
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    bot.buy(startCapital + 100); 
+    expect(consoleSpy).toHaveBeenCalledWith('Not enough capital to complete transaction.');
+    expect(bot.account.capital).toBe(startCapital);
+    expect(bot.account.stock.worth).toBe(0);
+    consoleSpy.mockRestore();
+});
+
+test('account_status gives correct status', () => {
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    bot.buy(500);
+    bot.account_status(1);
+    expect(consoleSpy).toHaveBeenCalled();
+    consoleSpy.mockRestore();
+});
+
+test('sell does not allow selling more than owned stock', () => {
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    bot.buy(300);
+    bot.sell(400);
+    expect(consoleSpy).toHaveBeenCalledWith('Account does not own enough of selected stock');
+    expect(bot.account.capital).toBe(startCapital - 300);
+    expect(bot.account.stock.worth).toBe(300);
+    consoleSpy.mockRestore();
+});
