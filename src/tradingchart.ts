@@ -5,6 +5,8 @@ import zoomPlugin from "chartjs-plugin-zoom";
 // Register necessary chart.js components
 Chart.register(...registerables, zoomPlugin);
 
+let chartInstance: Chart | null = null; // Store chart instance globally
+
 /**
  * Renders a trading chart using Chart.js to visualize account value, stock price,
  * and buy/sell signals over time.
@@ -25,9 +27,13 @@ export function renderTradingChart(results: trading_result): void {
     return;
   }
 
+  if (chartInstance) {
+    chartInstance.destroy();
+  }
+
+
   // Format timestamps to readable strings
   const formatDate = (timestamp: number) => {
-    console.log(timestamp);
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
@@ -69,6 +75,7 @@ export function renderTradingChart(results: trading_result): void {
           backgroundColor: "green",
           pointRadius: 5,
           type: 'scatter', // Scatter chart for buy signals
+          hidden: true
         },
         {
           label: "Sell Signals",
@@ -90,6 +97,7 @@ export function renderTradingChart(results: trading_result): void {
           backgroundColor: "red",
           pointRadius: 5,
           type: 'scatter', // Scatter chart for sell signals
+          hidden: true
         },
         {
           label: "Stock Price",
@@ -101,6 +109,7 @@ export function renderTradingChart(results: trading_result): void {
           backgroundColor: "black",
           pointRadius: 5,
           type: 'line',
+          hidden: true
         },
       ],
     },
@@ -129,21 +138,24 @@ export function renderTradingChart(results: trading_result): void {
     },
   };
 
-  const chart = new Chart(context, config);
+  chartInstance = new Chart(context, config);
 
-  let resetButton = document.createElement("button");
-  resetButton.id = "resetZoomBtn";
-  resetButton.textContent = "Reset Zoom";
-  resetButton.style.margin = "10px";
-  resetButton.style.padding = "5px 10px";
-  resetButton.style.fontSize = "14px";
-  resetButton.style.cursor = "pointer";
-  resetButton.style.display = "block";
+  let resetButton = document.getElementById("resetZoomBtn");
 
-  document.body.appendChild(resetButton); // Append to body or a specific container
+  if(!resetButton){
+    resetButton = document.createElement("button");
+    resetButton.id = "resetZoomBtn";
+    resetButton.textContent = "Reset Zoom";
+    resetButton.style.margin = "10px";
+    resetButton.style.padding = "5px 10px";
+    resetButton.style.fontSize = "14px";
+    resetButton.style.cursor = "pointer";
+    resetButton.style.display = "block";
+    
+    document.body.appendChild(resetButton);
 
-  // Add event listener to reset zoom
-  resetButton.onclick = () => {
-    chart.resetZoom();
-  };
+    resetButton.onclick = () => {
+      chartInstance?.resetZoom();
+    };
+  }
 }
