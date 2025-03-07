@@ -1,4 +1,4 @@
-import { get_response } from '../api';
+import { get_response } from '../src/api';
 
 
 

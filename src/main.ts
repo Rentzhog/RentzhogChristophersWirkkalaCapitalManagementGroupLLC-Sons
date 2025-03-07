@@ -2,20 +2,15 @@ import { json_to_timeline, timeline } from "./parse";
 import { get_response } from "./api"
 import { Bot } from "./actions"
 
-const prompt = require("prompt-sync")();
-
 /**
  * Initialises the program with stock tickers to be tracked
  */
-function start_up(): void {
+export function start_up(date_input: string, stock_input: string, capital_input: string): void {
     console.log("  RENTZHOG     Capital")
     console.log("CHRISTOPHERS   Management")
     console.log("  WIRKKALA     Group LLC.")
     console.log("                        & Sons")
 
-    const date_input: string = prompt('Enter simulation date (YYYY-MM-DD): ');
-    const stock_input: string = prompt('Enter stock ticker (ex. AAPL, GOOG): ');
-    const capital_input: string = prompt('Enter starting capital: ');
     const api_key: string = "ycT2akQvJ7n6FDhD99q3oB6ypvqbYaBg";
 
     get_response(api_key, stock_input, date_input, 1, 'minute').then(result => {
@@ -40,6 +35,8 @@ function main_loop(bot: Bot){
         bot.update_stock(time_idx);
         bot.account_status(time_idx);
     }
+
+    // HERE I WILL RETURN THE ARRAY
 }
 
 /**
@@ -73,5 +70,3 @@ function algorithm(bot: Bot, time_idx: number){
         console.log(`Waiting at index ${time_idx}, no action taken.`);
     }
 }
-
-start_up();

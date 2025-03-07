@@ -1,6 +1,6 @@
-
-import { json_to_timeline, timeline } from '../src/parse'; // Adjust the import path
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const parse_1 = require("../src/parse"); // Adjust the import path
 it('parse json str to timeline', () => {
     const jsonString = `
         {
@@ -20,8 +20,7 @@ it('parse json str to timeline', () => {
             }]
         }
     `;
-
-    const expectedTimeline: timeline = [
+    const expectedTimeline = [
         {
             time: 3.141592653,
             aggregate: {
@@ -36,11 +35,9 @@ it('parse json str to timeline', () => {
             },
         },
     ];
-
-    const result = json_to_timeline(jsonString);
+    const result = (0, parse_1.json_to_timeline)(jsonString);
     expect(result).toEqual(expectedTimeline);
 });
-
 it('multiple results', () => {
     const jsonString = `
         {
@@ -54,8 +51,7 @@ it('multiple results', () => {
             ]
         }
     `;
-
-    const expectedTimeline: timeline = [
+    const expectedTimeline = [
         {
             time: 1000,
             aggregate: { ticker: "AAPL", open: 1, close: 2, high: 3, low: 4, amount: 5, volume: 1, vwa: 1 },
@@ -65,11 +61,9 @@ it('multiple results', () => {
             aggregate: { ticker: "AAPL", open: 8, close: 9, high: 10, low: 11, amount: 12, volume: 6, vwa: 7 },
         },
     ];
-
-    const result = json_to_timeline(jsonString);
+    const result = (0, parse_1.json_to_timeline)(jsonString);
     expect(result).toEqual(expectedTimeline);
 });
-
 it('empty results', () => {
     const jsonString = `
         {
@@ -80,13 +74,12 @@ it('empty results', () => {
             "results": []
         }
     `;
-
-    const expectedTimeline: timeline = [];
-    const result = json_to_timeline(jsonString);
+    const expectedTimeline = [];
+    const result = (0, parse_1.json_to_timeline)(jsonString);
     expect(result).toEqual(expectedTimeline);
 });
-
 it('invalid json', () => {
     const invalidJsonString = 'invalid json';
-    expect(() => json_to_timeline(invalidJsonString)).toThrow();
+    expect(() => (0, parse_1.json_to_timeline)(invalidJsonString)).toThrow();
 });
+//# sourceMappingURL=parse.test.js.map
