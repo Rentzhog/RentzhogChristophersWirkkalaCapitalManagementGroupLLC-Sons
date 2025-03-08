@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trading Bot Simulator</title>
+    <script>var exports = {};</script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      form {
+        margin-bottom: 20px;
+      }
+      .form-group {
+        margin-bottom: 10px;
+      }
+      .form-group label {
+        margin-right: 10px;
+      }
+      #simulationResults {
+        display: none;
+        margin-top: 20px;
+      }
+
+      #tradingChart {
+        width: 100%;
+        max-height: 600px;
+        margin-top: 20px;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <h1>Trading Bot Simulator</h1>
+    <form id="simulationForm" style="margin-bottom: 20px;">
+      <div class="form-group">
+        <label for="date">Simulation Date:</label>
+        <input type="date" id="date" required />
+      </div>
+      <div class="form-group">
+        <label for="ticker">Stock Ticker:</label>
+        <input type="text" id="ticker" required />
+      </div>
+      <div class="form-group">
+        <label for="capital">Starting Capital:</label>
+        <input type="number" id="capital" required />
+      </div>
+      <button type="submit">Simulate</button>
+    </form>
+
+    <!-- Simulation Results -->
+    <div id="simulationResults">
+      <h2>Simulation Results</h2>
+      <div id="timeline"></div>
+      <div id="actions"></div>
+
+      <!-- The canvas where the chart will be rendered -->
+      <canvas id="tradingChart"></canvas>
+    </div>
+
+    <!-- The bundled JavaScript file -->
+    <script src="../dist/script.js"></script>
+  </body>
+</html>

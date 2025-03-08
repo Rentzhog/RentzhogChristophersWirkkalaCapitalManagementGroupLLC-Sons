@@ -1,7 +1,7 @@
-import { Bot } from '../actions';
-import { timeline } from '../parse';
+import { Bot } from '../bot';
+import { timeline } from '../types';
 
-let sampleTimeline: timeline;
+let sampleTimeline: timeline
 let bot: Bot;
 const startCapital = 1000;
 const ticker = 'AAPL';
@@ -9,7 +9,7 @@ const ticker = 'AAPL';
 beforeEach(() => {
     sampleTimeline = [
         {
-        time: 1000,
+        time: 500,
         aggregate: {
             ticker: ticker,
             open: 100,
@@ -22,16 +22,42 @@ beforeEach(() => {
         }
         },
         {
+        time: 1000,
+        aggregate: {
+            ticker: ticker,
+            open: 100,
+            close: 120,
+            high: 125,
+            low: 95,
+            amount: 1000,
+            volume: 500,
+            vwa: 110,
+        }
+        },
+        {
         time: 2000,
         aggregate: {
             ticker: ticker,
-            open: 110,
-            close: 120,
+            open: 120,
+            close: 110,
             high: 125,
             low: 105,
             amount: 1500,
             volume: 800,
             vwa: 115,
+        }
+        },
+        {
+        time: 3000,
+        aggregate: {
+            ticker: ticker,
+            open: 130,
+            close: 130,
+            high: 135,
+            low: 125,
+            amount: 1800,
+            volume: 800,
+            vwa: 130,
         }
         }
     ];
@@ -78,6 +104,13 @@ test('update_stock correctly updates stock worth', () => {
     expect(bot.account.stock.worth).toBeCloseTo(expectedWorth);
 });
 
+test('update_stock does nothing on index 0', () => {
+    bot.buy(100);
+    expect(bot.account.stock.worth).toBe(100);
+    bot.update_stock(0);
+    expect(bot.account.stock.worth).toBe(100);
+});
+
 test('buy does not allow purchase if capital is insufficient', () => {
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
     bot.buy(startCapital + 100); 
@@ -90,7 +123,7 @@ test('buy does not allow purchase if capital is insufficient', () => {
 test('account_status gives correct status', () => {
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
     bot.buy(500);
-    bot.account_status(1);
+    bot.log_account_status(1);
     expect(consoleSpy).toHaveBeenCalled();
     consoleSpy.mockRestore();
 });
@@ -104,3 +137,63 @@ test('sell does not allow selling more than owned stock', () => {
     expect(bot.account.stock.worth).toBe(300);
     consoleSpy.mockRestore();
 });
+
+test('get_total_value returns correct total when stock is present', () => {
+    bot.account.capital = 500;
+    bot.account.stock.worth = 200;
+    expect(bot.get_total_value()).toBe(700);
+});
+
+test('algorithm sells when stock close is above vwa', () => {
+    // Entry at idx 0 in sample timeline has close > vwa, we expect bot to sell
+    bot.account.capital = 1000;
+    const action = bot.algorithm(1);
+    expect(action.action).toBe('sell');
+});
+
+test('algorithm buys when stock close is below vwa', () => {
+    // Entry at idx 1 in sample timeline has close < vwa, we expect bot to buy
+    bot.account.capital = 1000;
+    const action = bot.algorithm(2);
+    expect(action.action).toBe('buy');
+});
+
+test('algorithm waits when close equals vwa', () => {
+    // Entry at idx 2 in sample timeline has close === vwa, we expect bot to wait
+    bot.account.capital = 1000;
+    const action = bot.algorithm(3);
+    expect(action.action).toBe('wait');
+});
+
+test('algorithm waits at first index', () => {
+    const action = bot.algorithm(0);
+    expect(action.action).toBe('wait');
+});
+
+test('random_algorithm buys when random() > 0.7', () => {
+    jest.spyOn(global.Math, 'random').mockReturnValue(0.8);
+
+    const action = bot.random_algorithm(1);
+    
+    expect(action.action).toBe('buy');
+    expect(bot.account.capital).toBeLessThan(startCapital); // Ensure capital is reduced
+});
+
+test('random_algorithm sells when random() < 0.3', () => {
+    jest.spyOn(global.Math, 'random').mockReturnValue(0.2);
+
+    bot.account.stock.worth = 500; // Ensure the bot has stock to sell
+    const action = bot.random_algorithm(1);
+
+    expect(action.action).toBe('sell');
+    expect(bot.account.capital).toBeGreaterThan(startCapital); // Ensure capital is increased
+});
+
+test('random_algorithm waits when random() is between 0.3 and 0.7', () => {
+    jest.spyOn(global.Math, 'random').mockReturnValue(0.5);
+
+    const action = bot.random_algorithm(1);
+
+    expect(action.action).toBe('wait');
+});
+
