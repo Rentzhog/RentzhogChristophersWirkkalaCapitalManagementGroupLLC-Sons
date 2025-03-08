@@ -18869,7 +18869,6 @@ class Bot {
     }
     /**
      * Buy/Sell algorithm, determines if we should buy or sell based on current stock information
-     * @param bot Bot to run algorithm on
      * @param time_idx What index of the bot's timeline we are on
      * @precondition time_idx should be in the bounds of the bots timeline
      * @returns an action of either buy sell or wait
@@ -18897,6 +18896,33 @@ class Bot {
         }
         else {
             console.log(`Waiting at index ${time_idx}, no action taken.`);
+        }
+        return current_action;
+    }
+    /**
+     * Alternate Buy/Sell algorithm, makes random decision, for experimental purposes
+     * @param time_idx What index of the bot's timeline we are on
+     * @precondition time_idx should be in the bounds of the bots timeline
+     * @returns an action of either buy sell or wait
+     */
+    random_algorithm(time_idx) {
+        const current_data = this.timeline[time_idx].aggregate;
+        const current_action = {
+            time: this.timeline[time_idx].time,
+            action: "wait"
+        };
+        const rng = Math.random();
+        if (rng > 0.7) {
+            const amountToBuy = this.account.capital * 0.5;
+            this.buy(amountToBuy);
+            current_action.action = "buy";
+            console.log(`Buying`, Math.round(amountToBuy * 100) / 100, `worth of ${current_data.ticker} at ${current_data.close}`);
+        }
+        else if (rng < 0.3) {
+            const amountToSell = this.account.stock.worth * 0.5;
+            this.sell(amountToSell);
+            current_action.action = "sell";
+            console.log(`Selling`, Math.round(amountToSell * 100) / 100, `worth of ${current_data.ticker} at ${current_data.close}`);
         }
         return current_action;
     }
