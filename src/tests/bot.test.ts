@@ -169,3 +169,31 @@ test('algorithm waits at first index', () => {
     const action = bot.algorithm(0);
     expect(action.action).toBe('wait');
 });
+
+test('random_algorithm buys when random() > 0.7', () => {
+    jest.spyOn(global.Math, 'random').mockReturnValue(0.8);
+
+    const action = bot.random_algorithm(1);
+    
+    expect(action.action).toBe('buy');
+    expect(bot.account.capital).toBeLessThan(startCapital); // Ensure capital is reduced
+});
+
+test('random_algorithm sells when random() < 0.3', () => {
+    jest.spyOn(global.Math, 'random').mockReturnValue(0.2);
+
+    bot.account.stock.worth = 500; // Ensure the bot has stock to sell
+    const action = bot.random_algorithm(1);
+
+    expect(action.action).toBe('sell');
+    expect(bot.account.capital).toBeGreaterThan(startCapital); // Ensure capital is increased
+});
+
+test('random_algorithm waits when random() is between 0.3 and 0.7', () => {
+    jest.spyOn(global.Math, 'random').mockReturnValue(0.5);
+
+    const action = bot.random_algorithm(1);
+
+    expect(action.action).toBe('wait');
+});
+
