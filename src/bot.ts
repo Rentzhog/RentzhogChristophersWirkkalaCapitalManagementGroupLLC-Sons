@@ -42,7 +42,7 @@ export class Bot {
         }
 
         else if (current_data.close > current_data.vwa) {
-            const amountToSell = this.account.capital * 0.5;
+            const amountToSell = this.account.stock.worth * 0.5;
             this.sell(amountToSell);
             current_action.action = "sell";
             console.log(`Selling`, Math.round(amountToSell * 100) / 100, `worth of ${current_data.ticker} at ${current_data.close}`);
