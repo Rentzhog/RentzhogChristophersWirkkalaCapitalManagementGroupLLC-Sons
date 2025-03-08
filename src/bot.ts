@@ -1,17 +1,5 @@
 import { timeline } from "./types";
-
-// A stock in account portfolio
-export type owned_stock = {
-    ticker : string,
-    worth  : number
-}
-
-// An account with liquid cash and asset portfolio
-export type account = {
-    capital: number,
-    stock: owned_stock
-}
-
+import { trade_action, account } from "./types";
 
 export class Bot {
     account: account;
@@ -25,6 +13,46 @@ export class Bot {
         }
         this.timeline = timeline;
         this.start_capital = start_capital;
+    }
+
+    /**
+     * Buy/Sell algorithm, determines if we should buy or sell based on current stock information
+     * @param bot Bot to run algorithm on
+     * @param time_idx What index of the bot's timeline we are on
+     * @precondition time_idx should be in the bounds of the bots timeline
+     * @returns an action of either buy sell or wait
+     */
+    algorithm(time_idx: number) : trade_action {
+        const current_data = this.timeline[time_idx].aggregate;
+
+        const current_action: trade_action = {
+            time: this.timeline[time_idx].time,
+            action: "wait"
+        }
+
+        if (time_idx === 0) {
+            return current_action;
+        }
+
+        if (current_data.close < current_data.vwa) {
+            const amountToBuy = this.account.capital * 0.5;
+            this.buy(amountToBuy);
+            current_action.action = "buy";
+            console.log(`Buying`, Math.round(amountToBuy * 100) / 100, `worth of ${current_data.ticker} at ${current_data.close}`);
+        }
+
+        else if (current_data.close > current_data.vwa) {
+            const amountToSell = this.account.capital * 0.5;
+            this.sell(amountToSell);
+            current_action.action = "sell";
+            console.log(`Selling`, Math.round(amountToSell * 100) / 100, `worth of ${current_data.ticker} at ${current_data.close}`);
+        }
+
+        else {
+            console.log(`Waiting at index ${time_idx}, no action taken.`);
+        }
+
+        return current_action;
     }
 
     /**
@@ -89,7 +117,7 @@ export class Bot {
      * Logs the status of the account compared to initialisation.
      * @param time_idx current simulation time as index of timeline.
      */
-    account_status(time_idx: number): void {
+    log_account_status(time_idx: number): void {
         const date = new Date(this.timeline[time_idx].time);
 
         const change: number = ((this.account.stock.worth + this.account.capital) / this.start_capital) - 1;

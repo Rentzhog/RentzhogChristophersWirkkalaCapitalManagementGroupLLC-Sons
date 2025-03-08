@@ -1,7 +1,7 @@
 import { json_to_timeline } from "./parse";
 import { account_snapshot, account_timeline, timeline, trade_action, trading_result } from "./types";
 import { get_response } from "./api"
-import { Bot } from "./actions"
+import { Bot } from "./bot"
 
 /**
  * Starts and runs the trading bot simulation.
@@ -41,10 +41,11 @@ function main_loop(bot: Bot) : trading_result {
     const actions: trade_action[] = [];
 
     for(let time_idx: number = 0; time_idx < bot.timeline.length; time_idx++){
-        const action: trade_action = algorithm(bot, time_idx);
-
         bot.update_stock(time_idx);
-        bot.account_status(time_idx);
+
+        const action: trade_action = bot.algorithm(time_idx);
+
+        bot.log_account_status(time_idx);
 
         const snapshot: account_snapshot = {
             time: bot.timeline[time_idx].time,
@@ -62,46 +63,4 @@ function main_loop(bot: Bot) : trading_result {
     }
 
     return trade_res;
-}
-
-/**
- * Buy/Sell algorithm, determines if we should buy or sell based on current stock information
- * @param bot Bot to run algorithm on
- * @param time_idx What index of the bot's timeline we are on
- * @precondition time_idx should be in the bounds of the bots timeline
- * @returns an action of either buy sell or wait
- */
-function algorithm(bot: Bot, time_idx: number) : trade_action {
-    const current_data = bot.timeline[time_idx].aggregate;
-
-    const current_action: trade_action = {
-        time: bot.timeline[time_idx].time,
-        action: "wait"
-    }
-
-    if (time_idx === 0) {
-        return current_action;
-    }
-
-    if (current_data.close < current_data.vwa && bot.account.capital >= current_data.close) {
-        const amountToBuy = bot.account.capital * 0.5;
-        if (amountToBuy / current_data.close > 0) {
-            bot.buy(amountToBuy);
-            current_action.action = "buy";
-            console.log(`Buying`, Math.round(amountToBuy * 100) / 100, `worth of ${current_data.ticker} at ${current_data.close}`);
-        }
-    }
-
-    else if (current_data.close > current_data.vwa) {
-        const amountToSell = bot.account.capital * 0.5;
-        bot.sell(amountToSell);
-        current_action.action = "sell";
-        console.log(`Selling`, Math.round(amountToSell * 100) / 100, `worth of ${current_data.ticker} at ${current_data.close}`);
-    }
-
-    else {
-        console.log(`Waiting at index ${time_idx}, no action taken.`);
-    }
-
-    return current_action;
 }

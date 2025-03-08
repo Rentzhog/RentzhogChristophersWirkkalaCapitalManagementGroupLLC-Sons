@@ -1,6 +1,6 @@
 
-import { json_to_timeline } from '../src/parse'; // Adjust the import path
-import { timeline } from '../src/types';
+import { json_to_timeline } from '../parse'; // Adjust the import path
+import { timeline } from '../types';
 
 it('parse json str to timeline', () => {
     const jsonString = `

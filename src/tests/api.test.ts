@@ -1,7 +1,4 @@
-import { get_response } from '../src/api';
-
-
-
+import { get_response } from '../api';
 
 
 it('fetch with correct url', async () => {

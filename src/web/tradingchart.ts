@@ -1,11 +1,11 @@
 import { Chart, ChartConfiguration, registerables } from "chart.js";
-import { trading_result } from "./types";
+import { trading_result } from "../types";
 import zoomPlugin from "chartjs-plugin-zoom";
 
 // Register necessary chart.js components
 Chart.register(...registerables, zoomPlugin);
 
-let chartInstance: Chart | null = null; // Store chart instance globally
+let chart_instance: Chart | null = null; // Store chart instance globally
 
 /**
  * Renders a trading chart using Chart.js to visualize account value, stock price,
@@ -13,36 +13,36 @@ let chartInstance: Chart | null = null; // Store chart instance globally
  * @param results The trading result data, including stock timeline, account value 
  *                over time, and trade actions (buy/sell).
  */
-export function renderTradingChart(results: trading_result): void {
-  const ctx = document.getElementById("tradingChart") as HTMLCanvasElement;
+export function render_trading_chart(results: trading_result): void {
+  const ctx: HTMLCanvasElement = document.getElementById("tradingChart") as HTMLCanvasElement;
 
   if (!ctx) {
     console.error("Canvas element not found");
     return;
   }
 
-  const context = ctx.getContext("2d");
+  const context: CanvasRenderingContext2D = ctx.getContext("2d") as CanvasRenderingContext2D;
   if (!context) {
     console.error("Failed to get canvas context");
     return;
   }
 
-  if (chartInstance) {
-    chartInstance.destroy();
+  if (chart_instance) {
+    chart_instance.destroy();
   }
 
 
   // Format timestamps to readable strings
-  const formatDate = (timestamp: number) => {
+  const format_date = (timestamp: number) => {
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   const timestamps = results.stock_timeline.map((snapshot) => snapshot.time);
-  const labels = timestamps.map(timestamp => formatDate(timestamp));
+  const labels = timestamps.map(timestamp => format_date(timestamp));
 
-  const buyPoints = results.trade_actions.filter((a) => a.action === "buy");
-  const sellPoints = results.trade_actions.filter((a) => a.action === "sell");
+  const buy_points = results.trade_actions.filter((a) => a.action === "buy");
+  const sell_points = results.trade_actions.filter((a) => a.action === "sell");
 
   const config: ChartConfiguration<'line' | 'scatter'> = {
     type: 'line',
@@ -58,7 +58,7 @@ export function renderTradingChart(results: trading_result): void {
         {
           label: "Buy Signals",
           data: timestamps.map((time_label) => {
-            const isBuyPoint = buyPoints.find((a) => a.time === time_label);
+            const isBuyPoint = buy_points.find((a) => a.time === time_label);
             
             if (isBuyPoint) {
               const snapshot = results.trade_actions.find((action) => action.time === time_label);
@@ -80,7 +80,7 @@ export function renderTradingChart(results: trading_result): void {
         {
           label: "Sell Signals",
           data: timestamps.map((time_label) => {
-            const isSellPoint = sellPoints.find((a) => a.time === time_label);
+            const isSellPoint = sell_points.find((a) => a.time === time_label);
             
             if (isSellPoint) {
               const snapshot = results.trade_actions.find((action) => action.time === time_label);
@@ -138,24 +138,24 @@ export function renderTradingChart(results: trading_result): void {
     },
   };
 
-  chartInstance = new Chart(context, config);
+  chart_instance = new Chart(context, config);
 
-  let resetButton = document.getElementById("resetZoomBtn");
+  let reset_button = document.getElementById("resetZoomBtn");
 
-  if(!resetButton){
-    resetButton = document.createElement("button");
-    resetButton.id = "resetZoomBtn";
-    resetButton.textContent = "Reset Zoom";
-    resetButton.style.margin = "10px";
-    resetButton.style.padding = "5px 10px";
-    resetButton.style.fontSize = "14px";
-    resetButton.style.cursor = "pointer";
-    resetButton.style.display = "block";
+  if(!reset_button){
+    reset_button = document.createElement("button");
+    reset_button.id = "resetZoomBtn";
+    reset_button.textContent = "Reset Zoom";
+    reset_button.style.margin = "10px";
+    reset_button.style.padding = "5px 10px";
+    reset_button.style.fontSize = "14px";
+    reset_button.style.cursor = "pointer";
+    reset_button.style.display = "block";
     
-    document.body.appendChild(resetButton);
+    document.body.appendChild(reset_button);
 
-    resetButton.onclick = () => {
-      chartInstance?.resetZoom();
+    reset_button.onclick = () => {
+      chart_instance?.resetZoom();
     };
   }
 }

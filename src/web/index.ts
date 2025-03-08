@@ -1,5 +1,5 @@
-import { renderTradingChart } from './tradingchart';
-import { run } from './main';
+import { render_trading_chart } from './tradingchart';
+import { run } from '../main';
 
   // Handle form submission
   document.getElementById("simulationForm")?.addEventListener("submit", async function (e: Event) {
@@ -19,6 +19,6 @@ import { run } from './main';
 
     if(result != null){
       // Call the chart rendering function
-      renderTradingChart(result);
+      render_trading_chart(result);
     }
   });
