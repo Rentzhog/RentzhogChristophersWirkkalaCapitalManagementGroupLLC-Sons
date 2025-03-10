@@ -1,4 +1,8 @@
-// Information about a stock
+/** 
+ * An {aggregate} is a Record
+ * It contains information about a stock over a specific timespan.
+ * Invariant: ticker must be a valid stock ticker.
+ */
 export type aggregate = {
     ticker : string, // Stock identifier
     open   : number, // Price at open
@@ -10,45 +14,81 @@ export type aggregate = {
     vwa    : number  // Volume Weighted Average price
 }
 
-// An aggregate at a timestamp
+/**
+ * A {snapshot} is a Record.
+ * It contains the aggregate of a stock and the point in time the snapshot
+ * was taken.
+ * Invariant: {time} must be a valid UNIX timestamp with milliseconds.
+ */
 export type snapshot = {
     time : number
     aggregate : aggregate
 }
 
-// Represents a timeline of aggregates in a timespan
+/**
+ * A {timeline} is an Array.
+ * It represents all snapshots taken across a given day.
+ * Invariant: must only contain snapshots, ordered chronologically.
+ */
 export type timeline = Array<snapshot>
 
-// A stock in account portfolio
+/**
+ * An {owned_stock} is a Record.
+ * It represents the ownership of a given stock with its ticker and the amount
+ * of value owned.
+ * Invariant: {ticker} must be a valid stock ticker.
+ * Invariant: {worth} cannot be negative.
+ */
 export type owned_stock = {
     ticker : string,
     worth  : number
 }
 
-// An account with liquid cash and asset portfolio
+/**
+ * An {account} is a Record.
+ * It represents a stock trading account, with amount of liquid capital, and
+ * stock assets.
+ * Invariant: {capital} cannot be negative.
+ */
 export type account = {
     capital: number,
     stock: owned_stock
 }
 
-// Result of the trading bot
+/**
+ * A {trading_result} is a Record.
+ * It represents the result of the trading bot.
+ */
 export type trading_result = {
     account_timeline : account_timeline,
     stock_timeline: timeline,
     trade_actions : trade_action[]
 }
 
-// Represents a trading action
+/**
+ * A {trade_action} is a Record.
+ * It represents a trading action.
+ * Invariant: {time} must be a valid UNIX timestamp with milliseconds.
+ */
 export type trade_action = {
     time: number;
     action: string;
 };
 
-// Represents the bots account at a specific time
+/**
+ * An {account_snapshot} is a Record.
+ * It represents the status of the bot account at a specific time.
+ * Invariant: {time} must be a valid UNIX timestamp with milliseconds.
+ * Invariant: {value} cannot be negative.
+ */
 export type account_snapshot = {
     time: number,
     value: number
 }
 
-// Represents a timeline over the bots account
+/**
+ * An {account_timeline} is an Array.
+ * It is a timeline of the account status over time.
+ * Invariant: must contain account_snapshots only, in chronological order.
+ */
 export type account_timeline = Array<account_snapshot>
