@@ -69,6 +69,7 @@ export type trading_result = {
  * A {trade_action} is a Record.
  * It represents a trading action.
  * Invariant: {time} must be a valid UNIX timestamp with milliseconds.
+ * Invariant: {action} must be either "buy", "sell", or "wait".
  */
 export type trade_action = {
     time: number;
