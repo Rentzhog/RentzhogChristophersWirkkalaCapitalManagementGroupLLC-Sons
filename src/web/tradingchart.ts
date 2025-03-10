@@ -2,10 +2,9 @@ import { Chart, ChartConfiguration, registerables } from "chart.js";
 import { trading_result } from "../types";
 import zoomPlugin from "chartjs-plugin-zoom";
 
-// Register necessary chart.js components
 Chart.register(...registerables, zoomPlugin);
 
-let chart_instance: Chart | null = null; // Store chart instance globally
+let chart_instance: Chart | null = null; 
 
 /**
  * Renders a trading chart using Chart.js to visualize account value, stock price,
@@ -32,7 +31,6 @@ export function render_trading_chart(results: trading_result): void {
   }
 
 
-  // Format timestamps to readable strings
   const format_date = (timestamp: number) => {
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -74,7 +72,7 @@ export function render_trading_chart(results: trading_result): void {
           borderColor: "green",
           backgroundColor: "green",
           pointRadius: 5,
-          type: 'scatter', // Scatter chart for buy signals
+          type: 'scatter',
           hidden: true
         },
         {
@@ -96,7 +94,7 @@ export function render_trading_chart(results: trading_result): void {
           borderColor: "red",
           backgroundColor: "red",
           pointRadius: 5,
-          type: 'scatter', // Scatter chart for sell signals
+          type: 'scatter',
           hidden: true
         },
         {
@@ -121,17 +119,17 @@ export function render_trading_chart(results: trading_result): void {
         },
         zoom: {
           pan: {
-            enabled: true, // Enable panning
-            mode: 'xy'     // Allow both horizontal and vertical panning
+            enabled: true,
+            mode: 'xy'   
           },
           zoom: {
             wheel: {
-              enabled: true // Enable zooming with mouse wheel
+              enabled: true 
             },
             pinch: {
-              enabled: true // Enable zooming with pinch gestures
+              enabled: true 
             },
-            mode: 'xy' // Zoom in both X and Y directions
+            mode: 'xy'
           }
         }
       },
